@@ -1,0 +1,20 @@
+body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.eolic-plants-list-container {
+    width: 50%;
+    border: 1px solid #39C0ED;
+    border-radius: 8px;
+}
+
+.new-plant-form-container {
+    width: 50%;
+    border: 1px solid #39C0ED;
+    border-radius: 8px;
+}

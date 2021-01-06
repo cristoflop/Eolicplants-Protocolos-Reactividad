@@ -3,10 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Plantas eolicas</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () {
+        $('body').bootstrapMaterialDesign();
+    });</script>
+
+    <script src="./js/index.js"></script>
 </head>
 <body>
-<h1>
-    HOLA MUNDO!
-</h1>
+<section class="eolic-plants-list-container shadow p-3 mb-5 bg-white rounded">
+    <ol id="eolic-plants-list">
+
+    </ol>
+</section>
+<section class="new-plant-form-container shadow p-3 mb-5 bg-white rounded">
+    <form>
+        <fieldset class="form-group">
+            <label class="bmd-label-floating" for="forCityName">Nombre de la ciudad</label>
+            <input type="text" class="form-control" id="forCityName" name="cityName">
+        </fieldset>
+        <button type="submit" class="btn btn-info btn-block btn-raised">Crear planta</button>
+    </form>
+</section>
 </body>
 </html>
