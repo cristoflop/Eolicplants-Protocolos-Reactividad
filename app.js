@@ -6,6 +6,10 @@ const config = require("./config");
 const path = require("path");
 const server = express();
 
+const http = require("http");
+const socketServer = http.Server(server);
+const io = require("socket.io")(socketServer);
+
 const staticFiles = path.join(__dirname, "public");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -40,4 +44,9 @@ server.listen(config.port, err => {
         console.error(`No se ha podido iniciar el servidor: ${err.message}`)
     else
         console.log(`Servidor arrancado en el puerto ${config.port}`)
+});
+
+io.on("connection", function (socket) {
+    console.log("conexion establecida");
+    socket.emit("messages", messages);
 });
