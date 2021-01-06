@@ -15,6 +15,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 // declare routers
+const eolicPlantsRouter = require("./routes/eolicPlantsRouter");
 
 server.use(logger(config.logging));
 server.use(express.json());
@@ -23,6 +24,7 @@ server.use(bodyParser.urlencoded({extended: false}));
 server.use(cookieParser());
 
 // routers use
+server.use("/", eolicPlantsRouter);
 
 server.use(middlewareNotFound);
 server.use(middlewareServerError);
