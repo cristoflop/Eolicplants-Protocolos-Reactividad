@@ -3,24 +3,20 @@
 const express = require('express');
 const logger = require('morgan');
 const config = require("./config");
-const url = `mongodb://${config.dbConfig.host}:${config.dbConfig.databaseServerPort}/${config.dbConfig.database}`;
+const path = require("path");
 const server = express();
-const mongoose = require("mongoose");
-const database = mongoose.connection;
 
-mongoose.connect(
-    url,
-    {
-        useCreateIndex: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }
-)
+const staticFiles = path.join(__dirname, "public");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 // declare routers
 
 server.use(logger(config.logging));
 server.use(express.json());
+server.use(express.static(staticFiles));
+server.use(bodyParser.urlencoded({extended: false}));
+server.use(cookieParser());
 
 // routers use
 
@@ -39,15 +35,9 @@ function middlewareServerError(error, request, response, next) {
     response.json(error);
 }
 
-database.on("error", function () {
-    console.error("Error al conectar con la bd");
-});
-
-database.once("open", () => {
-    server.listen(config.port, err => {
-        if (err)
-            console.error(`No se ha podido iniciar el servidor: ${err.message}`)
-        else
-            console.log(`Servidor arrancado en el puerto ${config.port}`)
-    });
+server.listen(config.port, err => {
+    if (err)
+        console.error(`No se ha podido iniciar el servidor: ${err.message}`)
+    else
+        console.log(`Servidor arrancado en el puerto ${config.port}`)
 });
