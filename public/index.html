@@ -17,18 +17,19 @@
         $('body').bootstrapMaterialDesign();
     });</script>
 
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/index.js"></script>
 </head>
 <body>
 <section class="eolic-plants-list-container shadow p-3 mb-5 bg-white rounded">
     <h3>Lista de plantas eolicas</h3>
-    <ol id="eolic-plants-list">
+    <ol id="eolicPlants">
 
     </ol>
 </section>
 <section class="new-plant-form-container shadow p-3 mb-5 bg-white rounded">
-    <form>
+    <form onsubmit="addEolicPlant()">
         <fieldset class="form-group">
             <label class="bmd-label-floating" for="forCityName">Nombre de la ciudad</label>
             <input type="text" class="form-control" id="forCityName" name="cityName">

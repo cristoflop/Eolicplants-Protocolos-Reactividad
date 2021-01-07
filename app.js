@@ -4,11 +4,7 @@ const express = require('express');
 const logger = require('morgan');
 const config = require("./config");
 const path = require("path");
-const server = express();
-
-const http = require("http");
-const socketServer = http.Server(server);
-const io = require("socket.io")(socketServer);
+const app = express();
 
 const staticFiles = path.join(__dirname, "public");
 const bodyParser = require("body-parser");
@@ -17,17 +13,17 @@ const cookieParser = require("cookie-parser");
 // declare routers
 const eolicPlantsRouter = require("./routes/eolicPlantsRouter");
 
-server.use(logger(config.logging));
-server.use(express.json());
-server.use(express.static(staticFiles));
-server.use(bodyParser.urlencoded({extended: false}));
-server.use(cookieParser());
+app.use(logger(config.logging));
+app.use(express.json());
+app.use(express.static(staticFiles));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 
 // routers use
-server.use("/", eolicPlantsRouter);
+app.use("/", eolicPlantsRouter);
 
-server.use(middlewareNotFound);
-server.use(middlewareServerError);
+app.use(middlewareNotFound);
+app.use(middlewareServerError);
 
 function middlewareNotFound(request, response) {
     response.status(404);
@@ -41,14 +37,16 @@ function middlewareServerError(error, request, response, next) {
     response.json(error);
 }
 
-server.listen(config.port, err => {
+const server = app.listen(config.port, err => {
     if (err)
         console.error(`No se ha podido iniciar el servidor: ${err.message}`)
     else
         console.log(`Servidor arrancado en el puerto ${config.port}`)
 });
 
-io.on("connection", function (socket) {
-    console.log("conexion establecida");
-    socket.emit("messages", messages);
+var sockets = 0;
+const io = require("socket.io")(server);
+
+io.on("connection", socket => {
+    socket.emit("connection", sockets++);
 });
