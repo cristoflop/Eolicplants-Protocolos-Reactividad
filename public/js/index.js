@@ -2,46 +2,40 @@
 
 const socket = io();
 
-socket.on("connection", iConnection => {
-    console.log(`Conexion numero ${iConnection}`);
-    // peticion para cargar las plantas eolicas
-    chargeEolicPlants();
+socket.on("connection", function () {
+    console.log("Nuevo cliente conectado! =]");
+    rechargeEolicPlants();
 });
 
-socket.on("newPlant", eolicPlant => {
-    // peticion para añadir nueva planta eolica
-})
-
-function render(data) {
-    document.getElementById('eolicPlants').innerHTML = data.map((elem, index) => {
-        return (
-            `<li>
-                <strong>${elem.cityName}</strong>
-            </li>`)
-    }).join(" ");
-}
+socket.on("newPlant", function () {
+    rechargeEolicPlants();
+});
 
 function addEolicPlant() {
     const cityName = document.getElementById("forCityName").value.trim();
     if (cityName === "") {
         alert("El nombre de la ciudad no puede ser vacio");
     } else {
-        alert("Se guarda la planta eolica");
-        socket.send({cityName: cityName})
+        save("/eolic/", {cityName: cityName})
+            .then(eolicPlant => {
+                socket.emit("newPlant", eolicPlant.cityName); // envia evento al servidor para que los demas recarguen
+            });
     }
 }
 
-function chargeEolicPlants() {
+function rechargeEolicPlants() {
     // llamada ajax al servidor para recoger las plantas eolicas
     read("/eolic/").then(eolicPlants => {
         const eolicPlantsList = document.getElementById("eolic-plants-list");
+        let innerHTML = "";
         eolicPlants.forEach(eolicPlant => {
             const li =
                 `<li>
                     <strong>${eolicPlant.cityName}</strong> :: <strong>${eolicPlant.progress}%</strong>
                 </li>`;
-            eolicPlantsList.innerHTML = eolicPlantsList.innerHTML + `\n${li}`;
+            innerHTML = innerHTML.concat("\n", li);
         })
+        eolicPlantsList.innerHTML = innerHTML;
     });
 }
 
@@ -57,7 +51,7 @@ function save(url, data) {
             .then(response => response.json())
             .then(data => {
                 return resolve(data);
-            })
+            });
     });
 }
 
