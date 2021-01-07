@@ -17,14 +17,15 @@ function findAll(request, response) {
 }
 
 function save(request, response) {
-    const cityName = request.body.cityName.trim();
-    if (cityName !== "" && cityName !== undefined) {
+    const cityName = request.body.cityName;
+    if (cityName !== undefined && cityName.trim() !== "") {
         response.status(200);
         const eolicPlant = {
-            cityName: cityName,
+            cityName: cityName.trim(),
             progress: 0
         }
         eolicPlants.push(eolicPlant);
+        response.json(eolicPlants);
     } else {
         response.status(500);
     }
