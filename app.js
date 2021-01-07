@@ -44,9 +44,17 @@ const server = app.listen(config.port, err => {
         console.log(`Servidor arrancado en el puerto ${config.port}`)
 });
 
-var sockets = 0;
 const io = require("socket.io")(server);
 
 io.on("connection", socket => {
-    socket.emit("connection", sockets++);
+
+    socket.emit("connection");
+
+    socket.on("newPlant", city => {
+        const msg = `Nueva plata eolica en ${city}`
+        console.log(msg);
+        socket.broadcast.emit("newPlant"); // a todos los demas
+        socket.local.emit("newPlant"); // a mi mismo
+    });
+
 });
