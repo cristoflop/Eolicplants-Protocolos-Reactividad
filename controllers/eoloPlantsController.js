@@ -3,6 +3,12 @@
 const DaoEoloPlants = require("../public/js/daoEoloPlants");
 const daoEoloPlants = new DaoEoloPlants();
 
+/*
+dentro de los metodos de los controller que necesiten emitir a los clientes
+    let io = request.app.get("io");
+    io.sockets.emit("messageFromController", {message: "Mensaje del controlador"});
+*/
+
 function findAll(request, response) {
     const eoloPlants = daoEoloPlants.findAll();
     response.status(200);
@@ -23,6 +29,9 @@ function find(request, response) {
 
 function save(request, response) {
     const city = request.body.city;
+
+    // mensaje a la cola de peticiones de creacion
+
     if (city !== undefined && city.trim() !== "") {
         response.status(200);
         const eoloPlant = daoEoloPlants.save(city.trim());
