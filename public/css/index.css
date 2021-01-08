@@ -7,14 +7,31 @@ body {
     margin-bottom: 2%;
 }
 
-.eolic-plants-list-container {
-    width: 50%;
+.mi-border {
     border: 1px solid #39C0ED;
     border-radius: 8px;
 }
 
+.eolic-plants-list-container {
+    width: 50%;
+}
+
 .new-plant-form-container {
     width: 50%;
-    border: 1px solid #39C0ED;
-    border-radius: 8px;
+}
+
+#eolic-plants-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.mi-li {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
 }

@@ -4,48 +4,61 @@ const socket = io();
 
 socket.on("connection", function () {
     console.log("Nuevo cliente conectado! =]");
-    rechargeEolicPlants();
+    rechargeEoloPlants();
 });
 
-socket.on("newPlant", function () {
-    rechargeEolicPlants();
+socket.on("updatePlants", function () {
+    rechargeEoloPlants();
 });
 
-function addEolicPlant() {
-    const cityName = document.getElementById("forCityName").value.trim();
-    if (cityName === "") {
+function addEoloPlant() {
+    const city = document.getElementById("forCityName").value.trim();
+    if (city === "") {
         alert("El nombre de la ciudad no puede ser vacio");
     } else {
-        save("/eolic/", {cityName: cityName})
-            .then(eolicPlant => {
-                socket.emit("newPlant", eolicPlant.cityName); // envia evento al servidor para que los demas recarguen
+        update("/api/eoloplants", {city: city})
+            .then(eoloPlant => {
+                socket.emit("updatePlants", {city: eoloPlant.city}); // envia evento al servidor para que los demas recarguen
             });
     }
 }
 
-function rechargeEolicPlants() {
-    // llamada ajax al servidor para recoger las plantas eolicas
-    read("/eolic/").then(eolicPlants => {
-        const eolicPlantsList = document.getElementById("eolic-plants-list");
-        let innerHTML = "";
-        eolicPlants.forEach(eolicPlant => {
-            const li =
-                `<li>
-                    <strong>${eolicPlant.cityName}</strong> :: <strong>${eolicPlant.progress}%</strong>
-                </li>`;
-            innerHTML = innerHTML.concat("\n", li);
-        })
-        eolicPlantsList.innerHTML = innerHTML;
+function removeEoloPlant(buttonClicked) {
+    const plantId = parseInt(buttonClicked.value);
+    if (plantId === undefined || plantId == null) {
+        alert("Error en el id");
+    } else {
+        update("/api/eoloplants", {id: plantId}, "DELETE");
+        socket.emit("updatePlants");
+    }
+}
+
+function rechargeEoloPlants() {
+    read("/api/eoloplants").then(eoloPlants => {
+        const eoloPlantsList = document.getElementById("eolic-plants-list");
+        eoloPlantsList.innerHTML = eoloPlants.map(eoloPlant => {
+            return renderLiFromEoloPlant(eoloPlant);
+        }).join("\n");
     });
 }
 
-function save(url, data) {
+function renderLiFromEoloPlant(eoloPlant) {
+    // const completed = eoloPlant.completed ? `<strong>COMPLETADO</strong>` : "";
+    const deleteButton =
+        `<button onClick="removeEoloPlant(this)" class="btn btn-raised btn-danger" value="${eoloPlant.id}">Eliminar</button>`;
+    return `<li class="mi-li mi-border shadow p-2 mb-2 bg-white rounded">
+                <div class="eolic-plant-info"><strong>${eoloPlant.city}</strong> :: ${eoloPlant.progress}%</div>
+                <div>${deleteButton}</div>
+            </li>`
+}
+
+function update(url, data, method = "POST") {
     return new Promise((resolve, reject) => {
         const headers = new Headers();
         headers.append("Content-type", "application/json");
         fetch(url, {
             "headers": headers,
-            "method": "POST",
+            "method": method,
             "body": JSON.stringify(data)
         })
             .then(response => response.json())
