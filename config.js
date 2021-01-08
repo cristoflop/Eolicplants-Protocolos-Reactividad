@@ -3,7 +3,9 @@
 module.exports = {
     dbConfig: {
         host: "localhost",
-        database: "eolicplants"
+        database: "eolicplants",
+        user: "root",
+        password: "root"
     },
     logging: 'dev',
     port: 3000
