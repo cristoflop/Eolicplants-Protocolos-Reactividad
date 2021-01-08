@@ -1,14 +1,15 @@
 "use strict"
 
-let nextId = 0;
+const UUID = require("uuid");
 
 class EoloPlant {
 
-    constructor(city, progress = 0, completed = false) {
-        this.id = nextId++;
+    constructor(city, progress = 0, completed = false, planning = null) {
+        this.id = UUID.v1();
         this.city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
         this.progress = progress;
         this.completed = completed;
+        this.planning = planning;
     }
 
 }
@@ -27,18 +28,21 @@ class DaoEoloPlants {
         return this.eoloPlants;
     }
 
+    find(id) {
+        console.log("Buscamos la planta con id: " + id);
+        const searchedEoloPlants = this.eoloPlants.filter(eoloPlant => eoloPlant.id === id);
+        return searchedEoloPlants.length > 0 ? searchedEoloPlants[0] : null;
+    }
+
     save(city) {
         const eoloPlant = new EoloPlant(city);
         this.eoloPlants.push(eoloPlant);
         return eoloPlant;
     }
 
-    remove(id) {
-        const searchedEoloPlants = this.eoloPlants.filter(eoloPlant => eoloPlant.id === id);
-        if (searchedEoloPlants.length > 0) {
-            const index = this.eoloPlants.indexOf(searchedEoloPlants[0]);
-            this.eoloPlants.splice(index, 1)
-        }
+    remove(eoloPlant) {
+        const index = this.eoloPlants.indexOf(eoloPlant);
+        if (index > -1) this.eoloPlants.splice(index, 1);
     }
 
 }

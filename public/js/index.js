@@ -24,8 +24,8 @@ function addEoloPlant() {
 }
 
 function removeEoloPlant(buttonClicked) {
-    const plantId = parseInt(buttonClicked.value);
-    if (plantId === undefined || plantId == null) {
+    const plantId = buttonClicked.value;
+    if (plantId === undefined || plantId === "") {
         alert("Error en el id");
     } else {
         update("/api/eoloplants", {id: plantId}, "DELETE");
