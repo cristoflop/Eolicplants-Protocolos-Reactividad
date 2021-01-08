@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 // declare routers
-const eolicPlantsRouter = require("./routes/eolicPlantsRouter");
+const eoloPlantsRouter = require("./routes/eoloPlantsRouter");
 
 app.use(logger(config.logging));
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // routers use
-app.use("/", eolicPlantsRouter);
+app.use("/api", eoloPlantsRouter);
 
 app.use(middlewareNotFound);
 app.use(middlewareServerError);
@@ -50,11 +50,9 @@ io.on("connection", socket => {
 
     socket.emit("connection");
 
-    socket.on("newPlant", city => {
-        const msg = `Nueva plata eolica en ${city}`
-        console.log(msg);
-        socket.broadcast.emit("newPlant"); // a todos los demas
-        socket.local.emit("newPlant"); // a mi mismo
+    socket.on("updatePlants", function () {
+        socket.broadcast.emit("updatePlants"); // a todos los demas
+        socket.local.emit("updatePlants"); // a mi mismo
     });
 
 });
