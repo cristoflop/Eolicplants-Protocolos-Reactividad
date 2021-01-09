@@ -3,6 +3,8 @@
 const DaoEoloPlants = require("../public/js/daoEoloPlants");
 const daoEoloPlants = new DaoEoloPlants();
 
+const publisher = require("../amqp/newEoloPlantsPublisher");
+
 /*
 dentro de los metodos de los controller que necesiten emitir a los clientes
     let io = request.app.get("io");
@@ -27,14 +29,16 @@ function find(request, response) {
     }
 }
 
-function save(request, response) {
-    const city = request.body.city;
+async function save(request, response) {
+    const city = request.body.city.trim();
+    if (city !== undefined && city !== "") {
 
-    // mensaje a la cola de peticiones de creacion
+        // mensaje a la cola de peticion de creacion
+        const sent = await publisher.publish("newEoloPlantsQueue", {city: city});
+        console.log(`Se ha enviado la peticion de creacion: ${sent}`);
 
-    if (city !== undefined && city.trim() !== "") {
         response.status(200);
-        const eoloPlant = daoEoloPlants.save(city.trim());
+        const eoloPlant = daoEoloPlants.save(city);
         response.json(eoloPlant);
     } else {
         response.status(400); // bad request
