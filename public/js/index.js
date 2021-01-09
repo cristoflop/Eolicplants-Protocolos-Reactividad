@@ -2,12 +2,12 @@
 
 const socket = io();
 
-socket.on("connection", function () {
+socket.on("connection", () => {
     console.log("Nuevo cliente conectado! =]");
     rechargeEoloPlants();
 });
 
-socket.on("updatePlants", function () {
+socket.on("updatePlants", () => {
     rechargeEoloPlants();
 });
 

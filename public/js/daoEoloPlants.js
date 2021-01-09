@@ -29,7 +29,6 @@ class DaoEoloPlants {
     }
 
     find(id) {
-        console.log("Buscamos la planta con id: " + id);
         const searchedEoloPlants = this.eoloPlants.filter(eoloPlant => eoloPlant.id === id);
         return searchedEoloPlants.length > 0 ? searchedEoloPlants[0] : null;
     }
