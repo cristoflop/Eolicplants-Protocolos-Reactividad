@@ -51,8 +51,8 @@ function renderLiFromEoloPlant(eoloPlant) {
     const deleteButton =
         `<button onClick="removeEoloPlant(this)" class="btn btn-raised btn-danger" value="${eoloPlant.id}">Eliminar</button>`;
     return `<li class="mi-li mi-border shadow p-2 mb-2 bg-white rounded">
-                <div class="eolic-plant-info"><strong>${eoloPlant.city}</strong> :: ${eoloPlant.progress}%</div>
-                <div>${deleteButton}</div>
+                <div id="eolic-plant-info"><strong>${eoloPlant.city}</strong> :: ${eoloPlant.progress}%</div>
+                ${deleteButton}
             </li>`
 }
 

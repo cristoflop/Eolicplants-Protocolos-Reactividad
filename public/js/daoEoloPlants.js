@@ -6,7 +6,7 @@ class EoloPlant {
 
     constructor(city, progress = 0, completed = false, planning = null) {
         this.id = UUID.v1();
-        this.city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+        this.city = city.toLowerCase();
         this.progress = progress;
         this.completed = completed;
         this.planning = planning;
