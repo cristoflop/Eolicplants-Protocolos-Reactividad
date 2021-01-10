@@ -1,6 +1,7 @@
 "use strict"
 
 const UUID = require("uuid");
+const mysql = require("mysql");
 
 class EoloPlant {
 
@@ -30,6 +31,11 @@ class DaoEoloPlants {
 
     find(id) {
         const searchedEoloPlants = this.eoloPlants.filter(eoloPlant => eoloPlant.id === id);
+        return searchedEoloPlants.length > 0 ? searchedEoloPlants[0] : null;
+    }
+
+    findByName(city) {
+        const searchedEoloPlants = this.eoloPlants.filter(eoloPlant => eoloPlant.city === city);
         return searchedEoloPlants.length > 0 ? searchedEoloPlants[0] : null;
     }
 
