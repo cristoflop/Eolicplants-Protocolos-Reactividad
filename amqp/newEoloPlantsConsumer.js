@@ -1,35 +1,20 @@
 "use strict"
 
-const amqp = require("amqplib");
+const amqp = require("amqplib/callback_api");
 
 const CONN_URL = 'amqp://guest:guest@localhost';
+const queueName = "newEoloPlantsQueue";
 
-async function consume(queueName) {
-    try {
-        const connection = await amqp.connect(CONN_URL);
+amqp.connect(CONN_URL, async function (err, connection) {
+    const chanel = await connection.createChannel();
 
-        const chanel = await connection.createChannel();
+    chanel.assertQueue(queueName); // crea la cola si no existe y si existe no hace nada
 
-        await chanel.assertQueue(queueName); // crea la cola si no existe y si existe no hace nada
-
-        chanel.consume(queueName, (msg) => {
-            const content = JSON.parse(msg.content.toString());
-            chanel.ack(msg);
-            console.log(content);
-            return content;
-        }); // , {noAck: true}); // noAck borra de la cola los mensajes una vez recibidos hay que evitarlo
-
-        return null;
-    } catch (error) {
-
-    }
-}
-
-consume("newEoloPlantsQueue")
-    .catch(err => {
-        console.log("ERROR");
-    });
-
-module.exports = {
-    consume
-}
+    chanel.consume(queueName, (buffer) => {
+        const content = JSON.parse(buffer.content.toString());
+        console.log(content);
+        io.sockets.emit("consumerMessage");
+        chanel.ack(buffer);
+        return content;
+    }); // , {noAck: true}); // noAck borra de la cola los mensajes una vez recibidos hay que evitarlo
+});
