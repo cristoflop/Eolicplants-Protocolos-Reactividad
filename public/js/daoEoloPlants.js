@@ -1,7 +1,6 @@
 "use strict"
 
 const UUID = require("uuid");
-const mysql = require("mysql");
 
 class EoloPlant {
 
@@ -17,7 +16,8 @@ class EoloPlant {
 
 class DaoEoloPlants {
 
-    constructor() {
+    constructor(pool = undefined) {
+        this.pool = pool;
         this.eoloPlants = [
             new EoloPlant("madrid", 25),
             new EoloPlant("paris", 50),
@@ -25,8 +25,12 @@ class DaoEoloPlants {
         ];
     }
 
-    findAll() {
-        return this.eoloPlants;
+    async findAll() {
+        const query = "select * from plants";
+        const params = [];
+        const connection = await this.pool.getConnection();
+        const rows = await connection.query(query, params);
+        return this.eoloPlants.concat(rows);
     }
 
     find(id) {
