@@ -11,14 +11,6 @@ socket.on("updatePlants", () => {
     rechargeEoloPlants();
 });
 
-socket.on("messageFromController", data => {
-    console.log(`${data.message}`);
-});
-
-socket.on("consumerMessage", () => {
-    console.log("funciona");
-});
-
 function addEoloPlant() {
     const city = document.getElementById("forCityName").value.trim();
     if (city === "") {

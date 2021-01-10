@@ -47,6 +47,9 @@ const server = app.listen(config.port, err => {
 const io = require("socket.io")(server);
 app.set("io", io);
 
+const consumer = require("./amqp/newEoloPlantsConsumer");
+consumer.consume(io);
+
 io.on("connection", socket => {
 
     socket.emit("connection");

@@ -1,16 +1,13 @@
 "use strict"
 
+const mysql = require("mysql");
+const config = require("../config.js");
+const pool = mysql.createPool(config.dbConfig);
+
 const DaoEoloPlants = require("../public/js/daoEoloPlants");
-const daoEoloPlants = new DaoEoloPlants();
+const daoEoloPlants = new DaoEoloPlants(pool);
 
 const publisher = require("../amqp/newEoloPlantsPublisher");
-require("../amqp/newEoloPlantsConsumer");
-
-/*
-dentro de los metodos de los controller que necesiten emitir a los clientes
-    let io = request.app.get("io");
-    io.sockets.emit("messageFromController", {message: "Mensaje del controlador"});
-*/
 
 function findAll(request, response) {
     const eoloPlants = daoEoloPlants.findAll();
