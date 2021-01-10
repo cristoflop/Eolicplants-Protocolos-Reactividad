@@ -26,11 +26,20 @@ class DaoEoloPlants {
     }
 
     async findAll() {
-        const query = "select * from plants";
+        const query = "select * from eoloplants";
         const params = [];
-        const connection = await this.pool.getConnection();
-        const rows = await connection.query(query, params);
-        return this.eoloPlants.concat(rows);
+        this.pool.getConnection(async (error, connection) => {
+            if (error) {
+                return [];
+            }
+            console.log("CONECTADO");
+            const rows = await connection.query(query, params);
+            if (rows.length === 0)
+                return this.eoloPlants;
+            console.log(rows);
+            const eoloPlants = rows.map(row => mapToEoloPlant(row));
+            return this.eoloPlants.concat(eoloPlants);
+        });
     }
 
     find(id) {
@@ -44,6 +53,22 @@ class DaoEoloPlants {
     }
 
     save(city) {
+        const uuid = UUID.v1();
+        const query = `insert into eoloplants('id', 'city',)
+                       values (?, ?)`;
+        const params = [uuid, city];
+        this.pool.getConnection(async (error, connection) => {
+            if (error) {
+                return null;
+            }
+            console.log("CONECTADO");
+            const rows = await connection.query(query, params);
+            if (rows.length === 0)
+                return this.eoloPlants;
+            console.log(rows);
+            const eoloPlants = rows.map(row => mapToEoloPlant(row));
+            return this.eoloPlants.concat(eoloPlants);
+        });
         const eoloPlant = new EoloPlant(city);
         this.eoloPlants.push(eoloPlant);
         return eoloPlant;
@@ -54,6 +79,16 @@ class DaoEoloPlants {
         if (index > -1) this.eoloPlants.splice(index, 1);
     }
 
+}
+
+function mapToEoloPlant(row) {
+    return {
+        id: row.id,
+        city: row.city,
+        progress: row.progress,
+        completed: row.completed,
+        planning: row.planning
+    }
 }
 
 module.exports = DaoEoloPlants;

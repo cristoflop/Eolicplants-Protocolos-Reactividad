@@ -39,9 +39,9 @@ function middlewareServerError(error, request, response, next) {
 
 const server = app.listen(config.port, err => {
     if (err)
-        console.error(`No se ha podido iniciar el servidor: ${err.message}`)
+        console.error(`No se ha podido iniciar el servidor: ${err.message}`);
     else
-        console.log(`Servidor arrancado en el puerto ${config.port}`)
+        console.log(`Servidor arrancado en el puerto ${config.port}`);
 });
 
 const io = require("socket.io")(server);

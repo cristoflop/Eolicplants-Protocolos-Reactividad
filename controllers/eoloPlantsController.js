@@ -9,8 +9,8 @@ const daoEoloPlants = new DaoEoloPlants(pool);
 
 const publisher = require("../amqp/newEoloPlantsPublisher");
 
-function findAll(request, response) {
-    const eoloPlants = daoEoloPlants.findAll();
+async function findAll(request, response) {
+    const eoloPlants = await daoEoloPlants.findAll();
     response.status(200);
     response.json(eoloPlants);
 }
