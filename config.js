@@ -5,7 +5,7 @@ module.exports = {
         host: "localhost",
         database: "eolicplants",
         user: "root",
-        password: "root"
+        password: ""
     },
     logging: 'dev',
     port: 3000
