@@ -1,6 +1,6 @@
 "use strict"
 
-const mysql = require("mysql");
+const mysql = require("mysql2/promise");
 const config = require("../config.js");
 const pool = mysql.createPool(config.dbConfig);
 
@@ -15,9 +15,9 @@ async function findAll(request, response) {
     response.json(eoloPlants);
 }
 
-function find(request, response) {
+async function find(request, response) {
     const id = request.params.id;
-    const eoloPlant = daoEoloPlants.find(id);
+    const eoloPlant = await daoEoloPlants.find(id);
     if (eoloPlant != null) {
         response.status(200);
         response.json(eoloPlant);
@@ -27,13 +27,16 @@ function find(request, response) {
     }
 }
 
-function remove(request, response) {
+async function remove(request, response) {
     const id = request.body.id;
     if (id !== undefined) {
-        const eoloPlant = daoEoloPlants.find(id);
+
+        const eoloPlant = await daoEoloPlants.find(id);
         if (eoloPlant != null) {
+
+            await daoEoloPlants.remove(eoloPlant.id);
+
             response.status(204);
-            daoEoloPlants.remove(eoloPlant);
             response.json();
         } else {
             response.status(404);
@@ -49,14 +52,21 @@ async function publish(request, response) {
     const city = request.body.city.trim().toLowerCase();
     if (city !== undefined && city !== "") {
 
-        const eoloPlant = daoEoloPlants.save(city);
+        const searchedEoloPlant = await daoEoloPlants.findByName(city);
+        if (searchedEoloPlant == null) {
 
-        // mensaje a la cola de peticion de creacion
-        const sent = await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
-        console.log(`Se ha enviado la peticion de creacion: ${sent}`);
+            const eoloPlant = await daoEoloPlants.save(city);
 
-        response.status(200);
-        response.json(eoloPlant);
+            // mensaje a la cola de peticion de creacion
+            const sent = await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
+            console.log(`Se ha enviado la peticion de creacion: ${sent}`);
+
+            response.status(200);
+            response.json(eoloPlant);
+        } else {
+            response.status(412) // precondicion no cumplida, la planta ya existe en esa ciudad
+            response.json({message: "La planta ya existe en esa ciudad"});
+        }
     } else {
         response.status(400); // bad request
         response.json({message: "Nombre invalido"});

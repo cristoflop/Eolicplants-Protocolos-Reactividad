@@ -16,7 +16,7 @@ function consume(io) {
             const content = JSON.parse(buffer.content.toString());
             console.log(content);
             // guardar en bd
-
+            // await dao.update(eoloPlant);
             // a los clientes de que actualicen
             io.sockets.emit("updatePlants");
             chanel.ack(buffer);
