@@ -9,7 +9,8 @@ class DaoEoloPlants {
     }
 
     async findAll() {
-        const query = "select * from eoloplants";
+        const query = `select *
+                       from eoloplants`;
         const params = [];
         const connection = await this.pool.getConnection();
         const [rows, fields] = await connection.execute(query, params);
@@ -19,42 +20,49 @@ class DaoEoloPlants {
 
     }
 
-    async find(id) {
-        const query = "select * from eoloplants where id = ?";
+    async findById(id) {
+        const query = `select *
+                       from eoloplants
+                       where id like ?`;
         const params = [id];
         const connection = await this.pool.getConnection();
         const [rows, fields] = await connection.execute(query, params);
         const eoloPlants = rows.map(row => mapToEoloPlant(row));
-        connection.close();
+        await connection.close();
         return eoloPlants.length > 0 ? eoloPlants[0] : null;
     }
 
     async findByName(city) {
-        const query = "select * from eoloplants where city = ?";
+        const query = `select *
+                       from eoloplants
+                       where city like ?`;
         const params = [city];
         const connection = await this.pool.getConnection();
-        const [rows, fields] = await connection.execute(query, params);
+        const [rows] = await connection.execute(query, params);
         const eoloPlants = rows.map(row => mapToEoloPlant(row));
-        connection.close();
+        await connection.close();
         return eoloPlants.length > 0 ? eoloPlants[0] : null;
     }
 
     async save(city) {
         const id = UUID.v1();
-        const query = "insert into eoloplants(id, city) values(?, ?)";
+        const query = `insert into eoloplants(id, city)
+                       values (?, ?)`;
         const params = [id, city];
         const connection = await this.pool.getConnection();
-        const [row, fields] = await connection.execute(query, params);
-        connection.close();
-        return mapToEoloPlant(row);
+        const [{insertId}] = await connection.execute(query, params);
+        await connection.close();
+        return insertId;
     }
 
     async remove(id) {
-        const query = "delete from eoloplants where id = ?";
+        const query = `delete
+                       from eoloplants
+                       where id like ?`;
         const params = [id];
         const connection = await this.pool.getConnection();
         await connection.execute(query, params);
-        connection.close();
+        await connection.close();
     }
 
 }
