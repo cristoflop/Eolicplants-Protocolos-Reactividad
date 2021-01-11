@@ -47,15 +47,16 @@ async function remove(request, response) {
 }
 
 async function publish(request, response) {
-    const city = request.body.city.trim().toLowerCase();
-    if (city !== undefined && city !== "") {
-        const searchedEoloPlant = await daoEoloPlants.findByName(city);
+    const city = request.body.city
+    if (city !== undefined && city.trim() !== "") {
+        const validCity = city.trim().toLowerCase();
+        const searchedEoloPlant = await daoEoloPlants.findByName(validCity);
         if (searchedEoloPlant == null) {
-            await daoEoloPlants.save(city);
-            const eoloPlant = await daoEoloPlants.findByName(city);
+            await daoEoloPlants.save(validCity);
+            const eoloPlant = await daoEoloPlants.findByName(validCity);
 
             // mensaje a la cola de peticion de creacion
-            // const sent = await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
+            await publisher.publish({id: eoloPlant.id, city: eoloPlant.city}); // devuelve true o false de si se ha enviado el mensaje
             // console.log(`Se ha enviado la peticion de creacion: ${sent}`);
 
             response.status(200);
