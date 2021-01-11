@@ -16,10 +16,8 @@ function addEoloPlant() {
     if (city === "") {
         alert("El nombre de la ciudad no puede ser vacio");
     } else {
-        update("/api/eoloplants", {city: city})
-            .then(eoloPlant => {
-                socket.emit("updatePlants", {city: eoloPlant.city}); // envia evento al servidor para que los demas recarguen
-            });
+        save("/api/eoloplants", {city: city});
+        // socket.emit("updatePlants", {city: eoloPlant.city}); // envia evento al servidor para que los demas recarguen
     }
 }
 
@@ -28,18 +26,19 @@ function removeEoloPlant(buttonClicked) {
     if (plantId === undefined || plantId === "") {
         alert("Error en el id");
     } else {
-        update("/api/eoloplants", {id: plantId}, "DELETE");
-        socket.emit("updatePlants");
+        remove("/api/eoloplants", {id: plantId});
+        // socket.emit("updatePlants");
     }
 }
 
 function rechargeEoloPlants() {
-    read("/api/eoloplants").then(eoloPlants => {
-        const eoloPlantsList = document.getElementById("eolic-plants-list");
-        eoloPlantsList.innerHTML = eoloPlants.map(eoloPlant => {
-            return renderLiFromEoloPlant(eoloPlant);
-        }).join("\n");
-    });
+    read("/api/eoloplants")
+        .then(response => {
+            const eoloPlantsList = document.getElementById("eolic-plants-list");
+            eoloPlantsList.innerHTML = response.data.map(eoloPlant => {
+                return renderLiFromEoloPlant(eoloPlant);
+            }).join("\n");
+        });
 }
 
 function renderLiFromEoloPlant(eoloPlant) {
@@ -52,32 +51,47 @@ function renderLiFromEoloPlant(eoloPlant) {
             </li>`
 }
 
-function update(url, data, method = "POST") {
-    return new Promise((resolve, reject) => {
-        const headers = new Headers();
-        headers.append("Content-type", "application/json");
-        fetch(url, {
-            "headers": headers,
-            "method": method,
-            "body": JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                return resolve(data);
-            });
+/***********************************************************************************************************************************************/
+
+async function read(url) {
+    const headers = new Headers();
+    headers.append("Content-type", "application/json");
+    const response = await fetch(url, {
+        "headers": headers
     });
+    const result = await response.json();
+    return {
+        status: response.status,
+        data: result
+    }
 }
 
-function read(url) {
-    return new Promise((resolve, reject) => {
-        const headers = new Headers();
-        headers.append("Content-type", "application/json");
-        fetch(url, {
-            "headers": headers
-        })
-            .then(response => response.json())
-            .then(data => {
-                return resolve(data);
-            })
+async function save(url, data) {
+    const headers = new Headers();
+    headers.append("Content-type", "application/json");
+    const response = await fetch(url, {
+        "headers": headers,
+        "method": "POST",
+        "body": JSON.stringify(data)
     });
+    return {
+        status: response.status
+    }
+}
+
+async function remove(url, data) {
+    const headers = new Headers();
+    headers.append("Content-type", "application/json");
+    const response = await fetch(url, {
+        "headers": headers,
+        "method": "DELETE",
+        "body": JSON.stringify(data)
+    });
+    return {
+        status: response.status
+    }
+}
+
+window.onload = () => {
+    document.getElementById("forCityName").value = "";
 }

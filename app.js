@@ -54,9 +54,4 @@ io.on("connection", socket => {
 
     socket.emit("connection");
 
-    socket.on("updatePlants", () => {
-        socket.broadcast.emit("updatePlants"); // a todos los demas
-        socket.local.emit("updatePlants"); // a mi mismo
-    });
-
 });
