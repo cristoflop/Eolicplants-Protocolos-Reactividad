@@ -18,7 +18,7 @@ function consume(io) {
             // guardar en bd
             // await dao.update(eoloPlant);
             // a los clientes de que actualicen
-            io.sockets.emit("updatePlants");
+            io.sockets.emit("enableBtn");
             chanel.ack(buffer);
         }); // , {noAck: true}); // noAck borra de la cola los mensajes una vez recibidos hay que evitarlo
     });
