@@ -15,7 +15,7 @@ class DaoEoloPlants {
         const connection = await this.pool.getConnection();
         const [rows, fields] = await connection.execute(query, params);
         const eoloPlants = rows.map(row => mapToEoloPlant(row));
-        await connection.close();
+        await connection.release();
         return eoloPlants;
 
     }
@@ -28,7 +28,7 @@ class DaoEoloPlants {
         const connection = await this.pool.getConnection();
         const [rows, fields] = await connection.execute(query, params);
         const eoloPlants = rows.map(row => mapToEoloPlant(row));
-        await connection.close();
+        await connection.release();
         return eoloPlants.length > 0 ? eoloPlants[0] : null;
     }
 
@@ -40,7 +40,7 @@ class DaoEoloPlants {
         const connection = await this.pool.getConnection();
         const [rows] = await connection.execute(query, params);
         const eoloPlants = rows.map(row => mapToEoloPlant(row));
-        await connection.close();
+        await connection.release();
         return eoloPlants.length > 0 ? eoloPlants[0] : null;
     }
 
@@ -51,7 +51,7 @@ class DaoEoloPlants {
         const params = [id, city];
         const connection = await this.pool.getConnection();
         const [{insertId}] = await connection.execute(query, params);
-        await connection.close();
+        await connection.release();
         return insertId;
     }
 
@@ -62,7 +62,7 @@ class DaoEoloPlants {
         const params = [id];
         const connection = await this.pool.getConnection();
         await connection.execute(query, params);
-        await connection.close();
+        await connection.release();
     }
 
 }
