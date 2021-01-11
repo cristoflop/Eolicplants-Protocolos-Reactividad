@@ -17,7 +17,7 @@ async function findAll(request, response) {
 
 async function find(request, response) {
     const id = request.params.id;
-    const eoloPlant = await daoEoloPlants.find(id);
+    const eoloPlant = await daoEoloPlants.findById(id);
     if (eoloPlant != null) {
         response.status(200);
         response.json(eoloPlant);
@@ -30,14 +30,12 @@ async function find(request, response) {
 async function remove(request, response) {
     const id = request.body.id;
     if (id !== undefined) {
-
-        const eoloPlant = await daoEoloPlants.find(id);
+        const eoloPlant = await daoEoloPlants.findById(id);
         if (eoloPlant != null) {
-
             await daoEoloPlants.remove(eoloPlant.id);
-
             response.status(204);
             response.json();
+            request.app.get("io").sockets.emit("updatePlants");
         } else {
             response.status(404);
             response.json({message: "Id no encontrado"});
@@ -51,18 +49,18 @@ async function remove(request, response) {
 async function publish(request, response) {
     const city = request.body.city.trim().toLowerCase();
     if (city !== undefined && city !== "") {
-
         const searchedEoloPlant = await daoEoloPlants.findByName(city);
         if (searchedEoloPlant == null) {
-
-            const eoloPlant = await daoEoloPlants.save(city);
+            await daoEoloPlants.save(city);
+            const eoloPlant = await daoEoloPlants.findByName(city);
 
             // mensaje a la cola de peticion de creacion
-            const sent = await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
-            console.log(`Se ha enviado la peticion de creacion: ${sent}`);
+            // const sent = await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
+            // console.log(`Se ha enviado la peticion de creacion: ${sent}`);
 
             response.status(200);
             response.json(eoloPlant);
+            request.app.get("io").sockets.emit("updatePlants");
         } else {
             response.status(412) // precondicion no cumplida, la planta ya existe en esa ciudad
             response.json({message: "La planta ya existe en esa ciudad"});
