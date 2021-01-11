@@ -16,13 +16,16 @@ socket.on("enableBtn", () => {
 });
 
 function addEoloPlant() {
-    document.getElementById("add-btn").disabled = true;
     const city = document.getElementById("forCityName").value.trim();
     if (city === "") {
         alert("El nombre de la ciudad no puede ser vacio");
     } else {
-        save("/api/eoloplants", {city: city});
-        // socket.emit("updatePlants", {city: eoloPlant.city}); // envia evento al servidor para que los demas recarguen
+        save("/api/eoloplants", {city: city})
+            .then(response => {
+                if (response.status === 200) {
+                    document.getElementById("add-btn").disabled = true;
+                }
+            });
     }
 }
 
