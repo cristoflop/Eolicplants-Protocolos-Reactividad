@@ -11,8 +11,8 @@ CREATE TABLE `eoloplants`
 (
     `id`        varchar(255) NOT NULL PRIMARY KEY,
     `city`      varchar(100) NOT NULL UNIQUE,
-    `progress`  int(11)      DEFAULT 0,
-    `completed` BIT          DEFAULT 0,
+    `progress`  int          DEFAULT 0,
+    `completed` tinyint      DEFAULT 0,
     `planning`  varchar(100) DEFAULT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
