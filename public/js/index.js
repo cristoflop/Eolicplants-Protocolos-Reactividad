@@ -11,7 +11,12 @@ socket.on("updatePlants", () => {
     rechargeEoloPlants();
 });
 
+socket.on("enableBtn", () => {
+    document.getElementById("add-btn").disabled = false;
+});
+
 function addEoloPlant() {
+    document.getElementById("add-btn").disabled = true;
     const city = document.getElementById("forCityName").value.trim();
     if (city === "") {
         alert("El nombre de la ciudad no puede ser vacio");
@@ -90,8 +95,4 @@ async function remove(url, data) {
     return {
         status: response.status
     }
-}
-
-window.onload = () => {
-    document.getElementById("forCityName").value = "";
 }
