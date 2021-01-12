@@ -1,3 +1,6 @@
-# Eolicplants-Server
+# Eolicplants
 
-### Practica sobre protocolos y reactividad del Master de Cloud Apps de la URJC.
+### Repositorio para el trabajo con protocolos y reactividad.
+
+##### Master de Cloud Apps de la URJC.
+___
