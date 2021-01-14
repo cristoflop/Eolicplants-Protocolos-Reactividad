@@ -23,7 +23,9 @@ function addEoloPlant() {
         save("/api/eoloplants", {city: city})
             .then(response => {
                 if (response.status === 200) {
-                    document.getElementById("add-btn").disabled = true;
+                    // document.getElementById("add-btn").disabled = true;
+                } else {
+                    alert("Error al guardar planta");
                 }
             });
     }

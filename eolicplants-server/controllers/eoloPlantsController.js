@@ -55,13 +55,12 @@ async function publish(request, response) {
             await daoEoloPlants.save(validCity);
             const eoloPlant = await daoEoloPlants.findByName(validCity);
 
-            // mensaje a la cola de peticion de creacion
-            await publisher.publish({id: eoloPlant.id, city: eoloPlant.city}); // devuelve true o false de si se ha enviado el mensaje
-            // console.log(`Se ha enviado la peticion de creacion: ${sent}`);
+            request.app.get("io").sockets.emit("updatePlants");
+
+            await publisher.publish({id: eoloPlant.id, city: eoloPlant.city});
 
             response.status(200);
             response.json(eoloPlant);
-            request.app.get("io").sockets.emit("updatePlants");
         } else {
             response.status(412) // precondicion no cumplida, la planta ya existe en esa ciudad
             response.json({message: "La planta ya existe en esa ciudad"});
