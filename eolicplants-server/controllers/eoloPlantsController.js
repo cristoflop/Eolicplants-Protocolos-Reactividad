@@ -7,7 +7,7 @@ const pool = mysql.createPool(config.dbConfig);
 const DaoEoloPlants = require("../public/js/daoEoloPlants");
 const daoEoloPlants = new DaoEoloPlants(pool);
 
-const publisher = require("../amqp/newEoloPlantsPublisher");
+const publisher = require("../amqp/eoloplantCreationRequestsPublisher");
 
 async function findAll(request, response) {
     const eoloPlants = await daoEoloPlants.findAll();

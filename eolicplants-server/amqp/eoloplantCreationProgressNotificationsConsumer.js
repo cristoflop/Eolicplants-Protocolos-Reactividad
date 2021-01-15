@@ -4,7 +4,7 @@ const amqp = require("amqplib/callback_api");
 const daoEoloPlants = ""; // cogemos el dao y actualizamos la bd con la planta
 
 const CONN_URL = 'amqp://guest:guest@localhost';
-const queueName = "newEoloPlantsQueue";
+const queueName = require("./rabbitQueueNames").eoloplantCreationProgressNotifications
 
 function consume(io) {
     amqp.connect(CONN_URL, async function (err, connection) {

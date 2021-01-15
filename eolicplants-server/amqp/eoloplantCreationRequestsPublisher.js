@@ -3,7 +3,7 @@
 const amqp = require("amqplib");
 
 const CONN_URL = 'amqp://guest:guest@localhost';
-const queueName = "newEoloPlantsQueue";
+const queueName = require("./rabbitQueueNames").eoloplantCreationRequests
 
 async function publish(data) {
     const connection = await amqp.connect(CONN_URL);
