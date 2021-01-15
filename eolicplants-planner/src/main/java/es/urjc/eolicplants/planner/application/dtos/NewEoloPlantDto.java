@@ -1,4 +1,4 @@
-package es.urjc.eolicplants.planner.amqp.dtos;
+package es.urjc.eolicplants.planner.application.dtos;
 
 public class NewEoloPlantDto {
     String id;
