@@ -8,17 +8,17 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NewEoloPlantsConsumer {
+public class EoloplantCreationRequestsConsumer {
 
     private final ObjectMapper objectMapper;
     private final EoloPlantService eoloPlantService;
 
-    public NewEoloPlantsConsumer(ObjectMapper objectMapper, EoloPlantService eoloPlantService) {
+    public EoloplantCreationRequestsConsumer(ObjectMapper objectMapper, EoloPlantService eoloPlantService) {
         this.objectMapper = objectMapper;
         this.eoloPlantService = eoloPlantService;
     }
 
-    @RabbitListener(queues = "newEoloPlantsQueue", ackMode = "AUTO")
+    @RabbitListener(queues = RabbitQueueNames.eoloplantCreationRequests, ackMode = "AUTO")
     public void received(String newEoloPlantJson) throws JsonProcessingException {
         // Aqui se reciben los mensajes desde el publicador y se procesan
         System.out.println("Message: " + newEoloPlantJson);
@@ -26,6 +26,5 @@ public class NewEoloPlantsConsumer {
         this.eoloPlantService.newEoloPlant(newEoloPlantDto);
         System.out.println("Converted json: " + newEoloPlantDto);
     }
-
-
+    
 }
